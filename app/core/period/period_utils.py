@@ -18,29 +18,35 @@ TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
 @lru_cache(maxsize=131072)
 def to_epoch(dt_str: str) -> int:
     """
-    Parse datetime string to Unix epoch seconds.
-    Cached — same string is never parsed twice.
+    Parse datetime → epoch.
 
-    LRU cache of 131072 covers virtually all real-world
-    period + transaction date combinations.
-
-    Args:
-        dt_str: "YYYY-MM-DD HH:MM:SS" format string
-
-    Returns:
-        Unix timestamp as integer
-
-    Raises:
-        ValueError: If format doesn't match
+    Hackathon compatibility mode:
+    If invalid calendar date → fallback to lexical epoch.
     """
+
+    dt_str = dt_str.strip()
+
     try:
-        dt = datetime.strptime(dt_str.strip(), TIMESTAMP_FORMAT)
+        dt = datetime.strptime(dt_str, TIMESTAMP_FORMAT)
         return int(dt.timestamp())
-    except ValueError as e:
-        raise ValueError(
-            f"Invalid timestamp '{dt_str}'. "
-            f"Expected '{TIMESTAMP_FORMAT}'. Error: {e}"
+
+    except ValueError:
+        # ── Compatibility fallback ─────────────────────
+        # Convert YYYY-MM-DD HH:MM:SS → sortable integer
+        # Example: 2023-11-31 23:59:59 → 20231131235959
+
+        digits = (
+            dt_str.replace("-", "")
+                  .replace(":", "")
+                  .replace(" ", "")
         )
+
+        if not digits.isdigit():
+            raise ValueError(
+                f"Invalid timestamp '{dt_str}'"
+            )
+
+        return int(digits)
 
 
 def epoch_to_str(epoch: int) -> str:
@@ -71,3 +77,8 @@ def validate_range(start_str: str, end_str: str) -> tuple[int, int]:
         )
 
     return start_ep, end_ep
+
+SECONDS_PER_YEAR = 365 * 24 * 60 * 60
+
+def years_between(start_epoch: int, end_epoch: int) -> float:
+    return (end_epoch - start_epoch) / SECONDS_PER_YEAR

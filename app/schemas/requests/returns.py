@@ -1,14 +1,48 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import List
-from app.schemas.common import Expense, Period
 
+
+# ──────────────────────────────────────────────
+# Period models
+# ──────────────────────────────────────────────
+
+class QPeriod(BaseModel):
+    fixed: float
+    start: str
+    end: str
+
+
+class PPeriod(BaseModel):
+    extra: float
+    start: str
+    end: str
+
+
+class KPeriod(BaseModel):
+    start: str
+    end: str
+
+
+# ──────────────────────────────────────────────
+# Transactions
+# ──────────────────────────────────────────────
+
+class Transaction(BaseModel):
+    date: str
+    amount: float
+
+
+# ──────────────────────────────────────────────
+# Returns Request
+# ──────────────────────────────────────────────
 
 class ReturnsRequest(BaseModel):
-    age: int = Field(..., ge=0)
-    wage: float = Field(..., ge=0)
-    inflation: float = Field(..., ge=0)
+    age: int
+    wage: float
+    inflation: float
 
-    expenses: List[Expense]
-    q_periods: List[Period]
-    p_periods: List[Period]
-    k_periods: List[Period]
+    q: List[QPeriod]
+    p: List[PPeriod]
+    k: List[KPeriod]
+
+    transactions: List[Transaction]

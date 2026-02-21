@@ -11,7 +11,6 @@ from app.core.financial.rounding import (
     parse_and_round,
 )
 from app.core.financial.compound_interest import (
-    calculate_investment_years,
     compound_interest,
     calculate_profit,
 )
@@ -38,7 +37,6 @@ __all__ = [
     # Compound interest
     "compound_interest",
     "calculate_profit",
-    "calculate_investment_years",
     # Inflation
     "adjust_for_inflation",
     "inflation_factor",
