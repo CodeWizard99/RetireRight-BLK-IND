@@ -1,0 +1,1 @@
+It can be further expanded to other asset classes like elss, ppf, stocks, debts, bonds, future & options
