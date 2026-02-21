@@ -46,7 +46,7 @@ def calculate_ceiling(
     """
     if amount <= Decimal("0"):
         raise ValueError(
-            f"Amount must be positive for ceiling calculation, got {amount}"
+            f"Negative amounts are not allowed"
         )
 
     _m        = Decimal(str(multiple))
